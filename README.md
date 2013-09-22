@@ -1,4 +1,6 @@
 ascii-comments
 ==============
 
-Generating ascii blocks for minimaps
+Generating ascii comments for minimaps
+
+Link: http://slagr.github.io/ascii-comments/index.html
