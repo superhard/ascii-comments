@@ -1,6 +1,9 @@
 ascii-comments
 ==============
 
-Generating ascii comments for minimaps
+Генерирует ASCII комментарии для minimap различных IDE.
+http://slagr.github.io/ascii-comments/index.html
 
-Link: http://slagr.github.io/ascii-comments/index.html
+В планах:
+1. При старте страницы фокус на первое поле перемещать
+2. При клике по странице тоже что-нибудь делать с фокусом, или первое поле выделять или второе.
