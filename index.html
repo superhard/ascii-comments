@@ -707,9 +707,6 @@ $(function () {
                 asciiline[6] += font[offset + 6];
             });
 
-            // Добавляем промежуток в одну строчку между ASCII строчками
-            if (i) result.push(' *');
-
             result = result.concat(asciiline);
         });
 
@@ -731,8 +728,6 @@ $(function () {
             $this.select();
         }, 0);
     });
-
-    $('textarea.source').select();
 });
 </script>
 <style>
