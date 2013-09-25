@@ -4,8 +4,8 @@
 <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 <script>
 /*
-    every 7 strings - new char.
-    Chars started as space(ascii 32) and ended at ~(ascii 126).
+    Каждые 7 строк обозначают новый ASCII символ.
+    Здесь описаны символы начиная с пробела[32] и заканчивая тильдой[126].
 */
 var font = [
     '   ',
@@ -676,24 +676,57 @@ var font = [
 ];
 
 $(function () {
-    $('input').change(function ()
+    $('textarea.source').on('change mousedown keydown keyup', function ()
     {
         var text = $(this).val();
-        var ascii = ['/*', ' *', ' *', ' *', ' *', ' *', ' *', ' *', ' */'];
-        $.each(text.split(''), function ()
+
+        // Делаем из всего комментария массив строк и
+        // убираем везде лишние пробельные символы.
+        var lines = $.map(text.split('\n'), $.trim);
+        var result = ['/*'];
+        $.each(lines, function (i, line)
         {
-            var ord = this.charCodeAt();
-            if (ord < 32 || ord > 126) return;
-            var offset = (ord - 32) * 7;
-            ascii[1] += font[offset + 0];
-            ascii[2] += font[offset + 1];
-            ascii[3] += font[offset + 2];
-            ascii[4] += font[offset + 3];
-            ascii[5] += font[offset + 4];
-            ascii[6] += font[offset + 5];
-            ascii[7] += font[offset + 6];
+            // Каждая ascii строка - 7 обычных в высоту.
+            var asciiline = [' *', ' *', ' *', ' *', ' *', ' *', ' *'];
+
+            $.each(line.split(''), function ()
+            {
+                var ord = this.charCodeAt();
+
+                // Пропускаем символы, которых нет в нашем шрифте.
+                if (ord < 32 || ord > 126) return;
+
+                // Собираем символ
+                var offset = (ord - 32) * 7;
+                asciiline[0] += font[offset + 0];
+                asciiline[1] += font[offset + 1];
+                asciiline[2] += font[offset + 2];
+                asciiline[3] += font[offset + 3];
+                asciiline[4] += font[offset + 4];
+                asciiline[5] += font[offset + 5];
+                asciiline[6] += font[offset + 6];
+            });
+
+            result = result.concat(asciiline);
         });
-        $('div').html(ascii.join('\n'));
+
+        // Закрываем комментарий и собираем все в одну строку
+        result = result.concat([' */']).join('\n');
+
+        $('textarea.result').val(result);
+    });
+
+    $('textarea.result').on('focus click mouseup mousedown', function ()
+    {
+        // Переменная that заменяет this внутри коллбэка таймаута,
+        // где this будет другой.
+        var $this = $(this);
+
+        // Без таймаута текст выделяется и после этого выделение снимается само.
+        setTimeout(function ()
+        {
+            $this.select();
+        }, 0);
     });
 });
 </script>
@@ -701,21 +734,18 @@ $(function () {
     body {
         text-align: center;
     }
-    body:after {
-        content: '* you can fast copy code with: Ctrl+A Ctrl+C';
+
+    textarea.source {
         display: block;
-        position: fixed;
-        bottom: 0;
-        color: grey;
+        width: 400px;
+        height: 150px;
+        font-size: 38px;
+        margin: 30px auto;
     }
-    input {
-        display: block;
-        width: 600px;
-        font-size: 40px;
-        margin: 50px auto;
-        text-align: center;
-    }
-    div {
+
+    textarea.result {
+        width: 400px;
+        height: 150px;
         display: inline-block;
         font-family: monospace;
         font-size:6px;
@@ -726,7 +756,7 @@ $(function () {
 </style>
 </head>
 <body>
-<input type="text">
-<div></div>
+<textarea class="source"></textarea>
+<textarea class="result"></textarea>
 </body>
 </html>
